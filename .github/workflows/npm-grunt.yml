@@ -1,0 +1,36 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Build
+      run: |
+        apt-get update
+        npm install 
+        apt-get install curl
+        curl -sL https://deb.nodesource.com/setup_4.x | bash
+        apt-get install nodejs
+        node -v
+        npm -v
+        npm install -g @testim/testim-cli
+        testim --version
+        grunt
